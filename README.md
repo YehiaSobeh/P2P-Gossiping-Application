@@ -7,16 +7,16 @@ clone the repositary <br>
 cd P2P-Gossiping-Application/peer
 ```
 <br>
-then 
+then <br>
 ```
 cargo bulid
 ```
 <br>
-now you can run peer as mentiond in the task and 
+now you can run peer as mentiond in the task and <br>
 ```
 cargo run -- --period 5 --port 8080
 ```
-and the second peer 
+and the second peer <br>
 ```
 cargo run -- --period 10 --port 8081 --connection 127.0.0.1:8080
 ```
