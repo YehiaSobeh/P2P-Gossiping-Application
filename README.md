@@ -21,7 +21,7 @@ Clone the repository:
 
 ```
 
-git clone <repository_url>
+git clone https://github.com/YehiaSobeh/P2P-Gossiping-Application.git
 
 ```
 
