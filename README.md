@@ -64,19 +64,7 @@ You can add more peers similarly. For example, start a third peer with a messagi
 cargo run -- --period 7 --port 8082 --connection 127.0.0.1:8080
 ```
 
-Example Output
-Here is an example output for a peer:
-```
 
-00:00:00 - My address is "127.0.0.1:8082"
-00:00:00 - Connected to the peers at ["127.0.0.1:8080", "127.0.0.1:8081"]
-00:00:05 - Received message [Hello, world! (from port 8080)] from "127.0.0.1:8080"
-00:00:06 - Received message [Rust is great! (from port 8081)] from "127.0.0.1:8081"
-00:00:07 - Sending message [Gossiping in P2P network! (from port 8082)] to ["127.0.0.1:8080", "127.0.0.1:8081"]
-00:00:10 - Received message [Random message (from port 8080)] from "127.0.0.1:8080"
-00:00:12 - Received message [Peer-to-peer communication (from port 8081)] from "127.0.0.1:8081"]
-00:00:14 - Sending message [Hello, world! (from port 8082)] to ["127.0.0.1:8080", "127.0.0.1:8081"]
-```
 
 Project Structure
 ```
