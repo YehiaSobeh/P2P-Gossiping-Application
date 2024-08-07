@@ -67,12 +67,16 @@ cargo run -- --period 7 --port 8082 --connection 127.0.0.1:8080
 Example Output
 Here is an example output for a peer:
 ```
+Starting peer with port: 8081, period: 10, connection: "127.0.0.1:8080"
 Received peer list: 
 Binding to address: 127.0.0.1:8081
 Peer listening on port 8081
-00:00:05 - Received message [Hello, world! (from peer 8082)] from 127.0.0.1:36204
-00:00:07 - Sending message [Gossiping in P2P network! (from peer 8082)] to 127.0.0.1:8082
+05:01:37 - Received message [Hello, world! (from peer 8082)] from 127.0.0.1:51212
+05:01:44 - Sending message [Gossip: Gossiping in P2P network! (from peer 8081)] to 127.0.0.1:8080
 ```
+
+![test](peer/images/test.png)
+
 
 Project Structure
 ```

@@ -2,8 +2,8 @@ use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::{Duration, SystemTime};
-
+use std::time::{Duration};
+use chrono::{Local, Timelike};
 use crate::connection::request_peer_list;
 use crate::message::generate_random_message;
 
@@ -52,7 +52,8 @@ impl Peer {
                 if let Ok(mut stream) = TcpStream::connect(peer) {
                     let message = format!("Gossip: {}", message);
                     stream.write_all(message.as_bytes()).expect("Failed to send message");
-                    println!("Sending message [{}] to {}", message, peer);
+                    let (hours, minutes, seconds) = print_current_time();
+                    println!("{:02}:{:02}:{:02} - Sending message [{}] to {}",hours,minutes,seconds, message, peer);
                 }
             }
         });
@@ -64,10 +65,29 @@ impl Peer {
     }
 }
 
+
+fn print_current_time() -> (u32, u32, u32) {
+    // Get the current local time
+    let now = Local::now();
+
+    // Extract hours, minutes, and seconds
+    let hours = now.hour();
+    let minutes = now.minute();
+    let seconds = now.second();
+    (hours, minutes, seconds)
+
+
+ 
+}
+
 fn handle_client(mut stream: TcpStream, peers: Arc<Mutex<Vec<String>>>) {
     let peer_addr = stream.peer_addr().expect("Failed to get peer address");
-    let timestamp = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).expect("Time went backwards").as_secs();
-    println!("{} - Received request from: {}", timestamp, peer_addr);
+ 
+
+    print_current_time();
+    let (hours, minutes, seconds) = print_current_time();
+    println!("{:02}:{:02}:{:02} - Received request from: {}", hours, minutes, seconds, peer_addr);
+ 
 
     let mut buffer = [0; 1024];
     let bytes_read = stream.read(&mut buffer).expect("Failed to read from client");
@@ -79,7 +99,10 @@ fn handle_client(mut stream: TcpStream, peers: Arc<Mutex<Vec<String>>>) {
         stream.write_all(response.as_bytes()).expect("Failed to write response");
     } else if request.starts_with("Gossip: ") {
         let message = &request["Gossip: ".len()..];
-        println!("{} - Received message [{}] from {}", timestamp, message, peer_addr);
+        //print_current_time();
+        let (hours, minutes, seconds) = print_current_time();
+
+        println!("{:02}:{:02}:{:02} - Received message [{}] from {}", hours, minutes, seconds, message, peer_addr);
     } else {
         let response = "Hello, Peer!".as_bytes();
         stream.write_all(response).expect("Failed to write response");
