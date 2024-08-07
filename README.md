@@ -80,13 +80,14 @@ Peer listening on port 8081
 
 Project Structure
 ```
-.
-├── src
-│   ├── cli.rs          # Handles CLI argument parsing
-│   ├── connection.rs   # Manages connections and peer list requests
-│   ├── message.rs      # Generates random gossip messages
-│   ├── peer.rs         # Core peer functionalities
-│   └── main.rs         # Entry point of the application
-├── Cargo.toml          # Cargo configuration file
+P2P-Gossiping-Application
+│  peer
+│  ├── src
+│  │   ├── cli.rs          # Handles CLI argument parsing
+│  │   ├── connection.rs   # Manages connections and peer list requests
+│  │   ├── message.rs      # Generates random gossip messages
+│  │   ├── peer.rs         # Core peer functionalities
+│  │   └── main.rs         # Entry point of the application
+│  └── Cargo.toml          # Cargo configuration file
 └── README.md           # This file
 ```
