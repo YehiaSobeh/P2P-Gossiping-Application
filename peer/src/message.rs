@@ -10,5 +10,5 @@ pub fn generate_random_message(port: u16) -> String {
     ];
     let mut rng = rand::thread_rng();
     let message = messages[rng.gen_range(0..messages.len())];
-    format!("{} (from port {})", message, port)
+    format!("{} (from peer {})", message, port)
 }
