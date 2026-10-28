@@ -1,93 +1,64 @@
-# P2P-Gossiping-Application
+# P2P Gossiping Application
 
-## Overview
+A peer-to-peer gossip protocol in Rust. Each peer listens on a TCP port, connects to a known peer, receives the current peer list, and then periodically broadcasts a gossip message to every peer it knows. Peers that disappear are dropped from the list, and the rest keep gossiping.
 
-This project implements a simple peer-to-peer (P2P) gossiping application in Rust. Each peer can connect to other peers, send random gossip messages periodically, and print received messages to the console.
+## Why it matters
 
-## Features
+Gossip is the building block behind membership and failure detection in systems like Cassandra and Consul. This project implements the core loop from scratch, without a framework, so every piece (discovery, fan-out, failure handling) is visible in a few hundred lines.
 
-- Simple CLI interface for starting and connecting peers.
-- Periodic gossip messages sent to connected peers.
-- Console output for received messages.
-- Modularized code for better readability and maintainability.
+![Three peers gossiping](peer/images/test.png)
 
-## Prerequisites
+## How it works
 
-- Rust (install from [rustup.rs](https://rustup.rs/))
+1. The first peer starts with only a port and a period.
+2. Each later peer starts with `--connection <host:port>` of any existing peer, requests its peer list, and connects to all of them.
+3. Every `--period` seconds a peer sends a random gossip message to all connected peers and prints what it receives.
+4. A failed connection removes that peer; the network continues without it.
 
-## Installation
+## Tech stack
 
-Clone the repository:
+Rust (std networking, threads), Cargo. No external runtime.
 
-```
+## How to run
 
+```bash
 git clone https://github.com/YehiaSobeh/P2P-Gossiping-Application.git
-
-```
-
-```
 cd P2P-Gossiping-Application/peer
-
-```
-
-Build the project:
-
-
 cargo build
-Usage
-You can start peers with different configurations using the CLI. Below are some examples:
-
-Starting the First Peer
-Start the first peer with a messaging period of 5 seconds on port 8080:
-
-
-
 ```
+
+Start three peers in three terminals:
+
+```bash
 cargo run -- --period 5 --port 8080
-```
-
-Starting a Second Peer
-
-Start the second peer with a messaging period of 10 seconds, connecting to the first peer on port 8081:
-
-
-```
 cargo run -- --period 10 --port 8081 --connection 127.0.0.1:8080
-```
-
-Starting Additional Peers
-You can add more peers similarly. For example, start a third peer with a messaging period of 7 seconds, connecting to the first peer on port 8082:
-
-
-
-```
 cargo run -- --period 7 --port 8082 --connection 127.0.0.1:8080
 ```
 
-Example Output
-Here is an example output for a peer:
+Example output:
+
 ```
 Starting peer with port: 8081, period: 10, connection: "127.0.0.1:8080"
-Received peer list: 
+Received peer list:
 Binding to address: 127.0.0.1:8081
 Peer listening on port 8081
 05:01:37 - Received message [Hello, world! (from peer 8082)] from 127.0.0.1:51212
 05:01:44 - Sending message [Gossip: Gossiping in P2P network! (from peer 8081)] to 127.0.0.1:8080
 ```
 
-![test](peer/images/test.png)
+## Project structure
 
+```
+peer/src
+├── cli.rs          CLI argument parsing
+├── connection.rs   connections and peer-list requests
+├── message.rs      random gossip message generation
+├── peer.rs         core peer loop
+└── main.rs         entry point
+```
 
-Project Structure
-```
-P2P-Gossiping-Application
-│  peer
-│  ├── src
-│  │   ├── cli.rs          # Handles CLI argument parsing
-│  │   ├── connection.rs   # Manages connections and peer list requests
-│  │   ├── message.rs      # Generates random gossip messages
-│  │   ├── peer.rs         # Core peer functionalities
-│  │   └── main.rs         # Entry point of the application
-│  └── Cargo.toml          # Cargo configuration file
-└── README.md           # This file
-```
+## What I learned
+
+- Peer discovery is the hard part, not message passing: who tells a new node about the others, and what happens when that node is gone.
+- Rust's ownership model forces you to decide up front which thread owns the peer list.
+- Logging with timestamps on both send and receive is the only way to debug a distributed loop.
